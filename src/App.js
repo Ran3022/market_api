@@ -1,23 +1,37 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect } from 'react';
+import TableRow from './components/TableRow';
+import "./App.css"
 
 function App() {
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    fetch('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=10&page=1&sparkline=false')
+      .then(response => response.json())
+      .then(data => setData(data))
+     
+      .catch(error => console.error('Error fetching data:', error));
+  }, []);
+  console.log('data')
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <h1>Cryptocurrency Market</h1>
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Symbol</th>
+            <th>Price (USD)</th>
+            <th>Volume (24h)</th>
+          </tr>
+        </thead>
+        <tbody>
+          {data.map((crypto, index) => (
+            <TableRow key={index} crypto={crypto} />
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 }
